@@ -1,37 +1,39 @@
 package main
 
-fun String.isInt():Boolean = this.matches("[0-9]+".toRegex())
+import db.DataBase
 
+fun String.isInt():Boolean = this.matches("[0-9]+".toRegex())
+val dataBase = DataBase.getInstance()
 
 fun main(args: Array<String>) {
-    println("######키오스크 작동중######")
-    menu()
+    println("######키오스크 작동시작######")
+    while (true){
+        val choseMenu = chooseMenu()
+
+        if(choseMenu == "종료") return
+
+        var menuTest = dataBase.menuMap[choseMenu]
+        println(menuTest?.size)
+
+
+    }
 }
 
-fun menu(){
+fun chooseMenu():String{
     while (true) {
-        println(
-            "[ SHAKESHACK MENU ]\n" +
-                    "1. Burgers         | 앵거스 비프 통살을 다져만든 버거\n" +
-                    "2. Forzen Custard  | 매장에서 신선하게 만드는 아이스크림\n" +
-                    "3. Drinks          | 매장에서 직접 만드는 음료\n" +
-                    "4. Beer            | 뉴욕 브루클린 브루어리에서 양조한 맥주\n" +
-                    "0. 종료            | 프로그램 종료"
-        )
+        var menuList = dataBase.menuList
+        var message="[ ${dataBase.storeName} MENU ]\n"
+        for(i in menuList.indices){
+            message += "${i+1}. ${menuList[i].name} \t | \t ${menuList[i].displayInfo}\n"
+        }
+        message += "0. 종료 \t | \t프로그램 종료"
+        println(message)
+
         val chooseNum = readln()
-        if(!chooseNum.isInt()){
-            println("숫자를 입력해주세요")
+        if(!chooseNum.isInt() || chooseNum.toInt() !in 0..menuList.size){
+            println("잘못된 번호를 입력했어요 다시 입력해주세요.")
             continue
         }
-        when(chooseNum.toInt()){
-
-
-
-            0 -> {
-                println("키오스크 종료")
-                break
-            }
-            else -> println("메뉴에 있는 숫자를 입력해주세요")
-        }
+        return if(chooseNum.toInt() == 0) "종료" else menuList[chooseNum.toInt()-1].name
     }
 }
