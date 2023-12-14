@@ -1,8 +1,5 @@
 package burger
 
-import burgeroption.Bacon
-import burgeroption.Cheese
-import burgeroption.PotatoBurn
 import db.Food
 import db.Option
 

@@ -1,6 +1,6 @@
 package db
 
-import burgeroption.Bacon
+import kotlin.math.floor
 
 abstract class Food {
     abstract val name: String
@@ -11,11 +11,14 @@ abstract class Food {
     fun addOption(option: Option){
         if(optionList.contains(option)) {
             price += option.price
-            selectedOption.plus(option)
+            price = floor(price*10) / 10
+            selectedOption = selectedOption.plus(option)
         }
     }
 
     override fun toString(): String {
-        return "$name | ${optionList.toList()} | $price | $displayInfo "
+        var optionNames = selectedOption.joinToString(", ") { it.name }
+        if(optionNames.isEmpty()) optionNames = "추가된 옵션 없음"
+        return "$name | $optionNames | $price | $displayInfo "
     }
 }

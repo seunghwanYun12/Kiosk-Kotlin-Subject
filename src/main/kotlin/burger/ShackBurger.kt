@@ -1,6 +1,5 @@
 package burger
 
-import burgeroption.Tomato
 import db.Food
 import db.Option
 

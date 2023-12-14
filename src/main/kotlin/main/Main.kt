@@ -37,7 +37,7 @@ fun main(args: Array<String>) {
 
 fun chooseMenu(): String? {
     while (true) {
-        var message = ""
+        var message = "[MENU]\n"
         message += "1. 돈 넣기\t|\t돈 넣기\n"
         message += "2. 음식 메뉴 선택\t|\t음식 메뉴 선택\n"
         message += "3. 장바구니\t|\t장바구니\n"
@@ -61,7 +61,7 @@ fun chooseMenu(): String? {
 fun chooseFoodMenu(): String? {
     while (true) {
         var menuList = dataBase.menuList
-        var message = "[ ${dataBase.storeName} MENU ]\n"
+        var message = "[${dataBase.storeName} MENU ]\n"
         for (i in menuList.indices) {
             message += "${i + 1}. ${menuList[i].name}\t|\t${menuList[i].displayInfo}\n"
         }
@@ -79,9 +79,8 @@ fun chooseFoodMenu(): String? {
 
 fun chooseFood(choseMenu: String): Food? {
     var foodMenu = dataBase.menuMap[choseMenu]
-
     while (true) {
-        var message = "[ $choseMenu MENU]\n"
+        var message = "[$choseMenu MENU]\n"
         for (i in foodMenu?.indices!!) {
             message += "${i + 1}. ${foodMenu[i].name}\t|\t${foodMenu[i].price}\t|\t${foodMenu[i].displayInfo}\n"
         }
@@ -93,19 +92,20 @@ fun chooseFood(choseMenu: String): Food? {
             continue
         }
         if (chooseNum.toInt() == 0) return null
-        val food = foodMenu[chooseNum.toInt()]
+        val food = foodMenu[chooseNum.toInt()-1]
         chooseOption(food)
         return food
-
     }
 }
 
 fun chooseOption(food: Food) {
     while (true) {
-        var message = "[ ${food.name} option]\n"
-        var chooseNum = readln()
+        var message = "[${food.name} option]\n"
+        message += "$food\n"
         message += "1. 장바구니 넣기\n"
         message += "2. 옵션 선택하기\n"
+        println(message)
+        var chooseNum = readln()
         if (!chooseNum.isInt() || chooseNum.toInt() !in 1..2) {
             println("잘못된 번호를 입력했어요 다시 입력해주세요.")
             continue
@@ -115,8 +115,10 @@ fun chooseOption(food: Food) {
         val options = food.optionList
         if (options.isEmpty()) {
             println("선택할 옵션이 없으니 옵션 선택은 넘어 가요")
-            return
+            continue
         }
+
+        message = "[ ${food.name} option]\n"
         for (i in options?.indices!!) {
             message += "${i + 1}. ${options[i].name}\t|\t${options[i].price}\n"
         }
