@@ -2,6 +2,7 @@ package main
 
 import db.DataBase
 import db.Food
+import kotlin.math.floor
 
 fun String.isInt(): Boolean = this.matches("[0-9]+".toRegex())
 val dataBase = DataBase.getInstance()
@@ -11,10 +12,12 @@ fun main(args: Array<String>) {
     var orderList: Array<Array<Food>> = emptyArray()
 
     while (true) { // 주문 하나
-        var foodList: Array<Food> = emptyArray()
+        var basket: Array<Food> = emptyArray()
         var insertMoney = 0.0
 
         while (true) { // 메뉴 선택
+            println("---------------------")
+            println(getNowStateMessage(insertMoney,basket))
             val chosenMenu = chooseMenu() ?: return
             when (chosenMenu) {
                 "money" -> { // 돈 추가 프로세스
@@ -26,7 +29,7 @@ fun main(args: Array<String>) {
                 "food" -> { // 음식 선택 프로세스
                     val chosenFoodMenu = chooseFoodMenu() ?: continue
                     val chosenFood = chooseFood(chosenFoodMenu) ?: continue
-                    foodList = foodList.plus(chosenFood!!)
+                    basket = basket.plus(chosenFood)
                 }
 
                 "basket" -> { // 장바구니 확인, 주문 완료 프로세스
@@ -35,8 +38,25 @@ fun main(args: Array<String>) {
             }
         }
         //주문 완료 프로세스
-        orderList = orderList.plus(foodList)
+        orderList = orderList.plus(basket)
     }
+}
+
+fun getNowStateMessage(insertMoney:Double,basket:Array<Food>):String {
+    var price = 0.0
+    var message = "[Now State]\n"
+    message += "장바구니 : \n"
+    if(basket.isEmpty()) message += "비어있음\n"
+    else{
+        basket.forEach {
+            message += "$it\n"
+            price += it.price
+        }
+    }
+    price = floor(price*10) /10
+    message += "필요 금액 : $price\n"
+    message += "투입 금액 : $insertMoney\n"
+    return message
 }
 
 fun chooseMenu(): String? {
