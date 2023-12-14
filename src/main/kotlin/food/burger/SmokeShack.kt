@@ -1,6 +1,6 @@
-package menu.burger
+package food.burger
 
-import menuoption.burgeroption.Bacon
+import option.burgeroption.Bacon
 import db.Food
 import db.Option
 

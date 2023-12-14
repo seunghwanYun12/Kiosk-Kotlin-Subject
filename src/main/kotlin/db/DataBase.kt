@@ -4,14 +4,14 @@ import menu.Beer
 import menu.Burger
 import menu.Drinks
 import menu.FrozenCustard
-import menu.beer.Guinness
-import menu.beer.Kirin
-import menu.beer.Stella
-import menu.burger.*
-import menu.drinks.Coke
-import menu.drinks.Fanta
-import menuoption.burgeroption.*
-import menuoption.drinksoption.Syrup
+import food.beer.Guinness
+import food.beer.Kirin
+import food.beer.Stella
+import food.burger.*
+import food.drinks.Coke
+import food.drinks.Fanta
+import option.burgeroption.*
+import option.drinksoption.Syrup
 
 class DataBase private constructor() {
     val storeName:String = "SHAKESHACK"
@@ -38,7 +38,7 @@ class DataBase private constructor() {
 
     private val drinksList:List<Food> = listOf(
         Coke(optionList = arrayOf(Syrup())),
-        Fanta()
+        Fanta(optionList = arrayOf(Syrup()))
     )
 
     private val frozenCustardList:List<Food> = listOf(

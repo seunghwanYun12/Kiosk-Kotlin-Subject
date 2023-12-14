@@ -1,4 +1,4 @@
-package menuoption.drinksoption
+package option.drinksoption
 
 import db.Option
 
