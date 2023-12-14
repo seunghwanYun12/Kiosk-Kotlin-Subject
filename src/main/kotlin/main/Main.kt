@@ -18,7 +18,9 @@ fun main(args: Array<String>) {
             val choseMenu = chooseMenu() ?: return
             when (choseMenu) {
                 "money" -> { // 돈 추가 프로세스
-
+                    val choseMoney = chooseMoney() ?:continue
+                    insertMoney += choseMoney
+                    println("$choseMoney 달러 추가 완료, 현재 달러 : $insertMoney\n")
                 }
 
                 "food" -> { // 음식 선택 프로세스
@@ -60,10 +62,29 @@ fun chooseMenu(): String? {
     }
 }
 
+fun chooseMoney():Double?{
+    while (true) {
+        var moneyList = dataBase.moneyList
+        var message = "[Money MENU]\n"
+        for (i in moneyList.indices) {
+            message += "${i + 1}. ${moneyList[i].displayInfo}\n"
+        }
+        message += "0. 처음으로\t|\t처음으로"
+        println(message)
+
+        val chooseNum = readln()
+        if (!chooseNum.isInt() || chooseNum.toInt() !in 0..moneyList.size) {
+            println("잘못된 번호를 입력했어요 다시 입력해주세요.")
+            continue
+        }
+        return if (chooseNum.toInt() == 0) null else moneyList[chooseNum.toInt() - 1].cost
+    }
+}
+
 fun chooseFoodMenu(): String? {
     while (true) {
         var menuList = dataBase.menuList
-        var message = "[${dataBase.storeName} MENU ]\n"
+        var message = "[${dataBase.storeName} MENU]\n"
         for (i in menuList.indices) {
             message += "${i + 1}. ${menuList[i].name}\t|\t${menuList[i].displayInfo}\n"
         }

@@ -52,6 +52,12 @@ class DataBase private constructor() {
         (menuList.find { it is FrozenCustard }?.name ?: "") to frozenCustardList
     )
 
+    val moneyList:List<Money> = listOf(
+        Money(1.0,"1달러"),
+        Money(5.0,"5달러"),
+        Money(10.0,"10달러"),
+    )
+
     companion object {
         private var INSTANCE: DataBase? = null
         fun getInstance(): DataBase {
