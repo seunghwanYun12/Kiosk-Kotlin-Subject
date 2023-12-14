@@ -15,18 +15,18 @@ fun main(args: Array<String>) {
         var insertMoney = 0.0
 
         while (true) { // 메뉴 선택
-            val choseMenu = chooseMenu() ?: return
-            when (choseMenu) {
+            val chosenMenu = chooseMenu() ?: return
+            when (chosenMenu) {
                 "money" -> { // 돈 추가 프로세스
-                    val choseMoney = chooseMoney() ?:continue
-                    insertMoney += choseMoney
-                    println("$choseMoney 달러 추가 완료, 현재 달러 : $insertMoney\n")
+                    val chosenMoney = chooseMoney() ?:continue
+                    insertMoney += chosenMoney
+                    println("$chosenMoney 달러 추가 완료, 현재 달러 : $insertMoney\n")
                 }
 
                 "food" -> { // 음식 선택 프로세스
-                    val choseFoodMenu = chooseFoodMenu() ?: continue
-                    val choseFood = chooseFood(choseFoodMenu) ?: continue
-                    foodList = foodList.plus(choseFood!!)
+                    val chosenFoodMenu = chooseFoodMenu() ?: continue
+                    val chosenFood = chooseFood(chosenFoodMenu) ?: continue
+                    foodList = foodList.plus(chosenFood!!)
                 }
 
                 "basket" -> { // 장바구니 확인, 주문 완료 프로세스
@@ -42,10 +42,10 @@ fun main(args: Array<String>) {
 fun chooseMenu(): String? {
     while (true) {
         var message = "[MENU]\n"
-        message += "1. 돈 넣기\t|\t돈 넣기\n"
-        message += "2. 음식 메뉴 선택\t|\t음식 메뉴 선택\n"
-        message += "3. 장바구니\t|\t장바구니\n"
-        message += "0. 종료\t|\t종료"
+        message += "1. 돈 넣기\n"
+        message += "2. 음식 메뉴 선택\n"
+        message += "3. 장바구니\n"
+        message += "0. 종료"
         println(message)
 
         val chooseNum = readln()
@@ -88,7 +88,7 @@ fun chooseFoodMenu(): String? {
         for (i in menuList.indices) {
             message += "${i + 1}. ${menuList[i].name}\t|\t${menuList[i].displayInfo}\n"
         }
-        message += "0. 처음으로\t|\t처음으로"
+        message += "0. 처음으로"
         println(message)
 
         val chooseNum = readln()
@@ -100,8 +100,8 @@ fun chooseFoodMenu(): String? {
     }
 }
 
-fun chooseFood(choseMenu: String): Food? {
-    var foodMenu = dataBase.menuMap[choseMenu]
+fun chooseFood(chosenMenu: String): Food? {
+    var foodMenu = dataBase.menuMap[chosenMenu]
     if(foodMenu == null){
         println("없는 메뉴에요!")
         return null
@@ -111,7 +111,7 @@ fun chooseFood(choseMenu: String): Food? {
         return null
     }
     while (true) {
-        var message = "[$choseMenu MENU]\n"
+        var message = "[$chosenMenu MENU]\n"
         for (i in foodMenu?.indices!!) {
             message += "${i + 1}. ${foodMenu[i].name}\t|\t${foodMenu[i].price}\t|\t${foodMenu[i].displayInfo}\n"
         }
