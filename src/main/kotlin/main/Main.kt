@@ -2,6 +2,7 @@ package main
 
 import db.DataBase
 import db.Food
+import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import java.time.LocalTime
 import kotlin.math.round
@@ -9,21 +10,28 @@ import kotlin.math.round
 fun String.isInt(): Boolean = this.matches("[0-9]+".toRegex())
 val dataBase = DataBase.getInstance()
 
-val bankMaintenanceStart: LocalTime = LocalTime.of(18, 0, 0)
-val bankMaintenanceEnd: LocalTime = LocalTime.of(18, 59, 0)
+val bankMaintenanceStart: LocalTime = LocalTime.of(23, 0, 0)
+val bankMaintenanceEnd: LocalTime = LocalTime.of(23, 59, 0)
+var orderList: Array<Array<Food>> = emptyArray()
 
-fun main(args: Array<String>) {
+const val GLOBAL_SCOPE_DELAY = 10000L
+const val MAIN_SCOPE_DELAY = 1000L
+
+fun main() = runBlocking  {
     println("######키오스크 작동시작######")
-    var orderList: Array<Array<Food>> = emptyArray()
+    GlobalScope.launch {
+        printOrderSize()
+    }
 
     while (true) { // 주문 하나
         var basket: Array<Food> = emptyArray()
         var insertMoney = 0.0
 
         while (true) { // 메뉴 선택
-            println("---------------------")
+            println("=======MainScope Delay======")
+            delay(MAIN_SCOPE_DELAY)
             println(getNowStateMessage(insertMoney, basket, orderList.size))
-            val chosenMenu = chooseMenu() ?: return
+            val chosenMenu = chooseMenu() ?: return@runBlocking
             when (chosenMenu) {
                 "money" -> { // 돈 추가 프로세스
                     val chosenMoney = chooseMoney() ?: continue
@@ -61,7 +69,8 @@ fun main(args: Array<String>) {
                         orderList = orderList.plus(basket)
                         var remainMoney = doubleCalc(insertMoney, totalPrice, "-")
                         println("거스름돈 $remainMoney 반환합니다.")
-                        println("주문 완료 (${LocalDateTime.now()}")
+                        println("주문 완료 (${LocalDateTime.now()})")
+                        break
                     } else if (chosenBasketMenu == "cancel") {
                         println("투입 금액 ${insertMoney}를 반환합니다.")
                         break
@@ -115,7 +124,7 @@ fun chooseMoney(): Double? {
         for (i in moneyList.indices) {
             message += "${i + 1}. ${moneyList[i].displayInfo}\n"
         }
-        message += "0. 처음으로\t|\t처음으로"
+        message += "0. 처음으로"
         println(message)
 
         val chooseNum = numberChoose(0, moneyList.size) ?: continue
@@ -240,4 +249,15 @@ fun doubleCalc(num1: Double, num2: Double, operator: String): Double? {
         else -> null
     }
 
+}
+
+suspend fun printOrderSize() = coroutineScope{
+    launch {
+        repeat(Int.MAX_VALUE) {
+            delay(GLOBAL_SCOPE_DELAY)
+            println("====== Global Scope Start =======")
+            println("주문 ${orderList.size}건 대기 중")
+            println("====== Global Scope End =======")
+        }
+    }
 }
