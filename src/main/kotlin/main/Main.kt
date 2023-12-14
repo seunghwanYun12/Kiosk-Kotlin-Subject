@@ -48,33 +48,8 @@ fun main() = runBlocking  {
                 "basket" -> { // 장바구니 확인, 주문 완료 프로세스
                     println(getNowStateMessage(insertMoney, basket, orderList.size))
                     val chosenBasketMenu = chooseBasketMenu() ?: continue
-                    if (chosenBasketMenu == "done") {
-                        var totalPrice = basket.fold(0.0) { price, it -> price + it.price }
-                        // 주문 체크
-                        if (basket.isEmpty()) {
-                            println("주문 추가 후 시도해주세요")
-                            continue
-                        }
-                        // 돈 체크
-                        if (totalPrice > insertMoney) {
-                            println("${totalPrice - insertMoney}만큼 돈 부족")
-                            continue
-                        }
-                        // 시간 체크
-                        if (!checkTime()) {
-                            println("은행 점검 시간 입니다. $bankMaintenanceStart ~ $bankMaintenanceEnd")
-                            println("현재 시간 ${LocalTime.now()}")
-                            continue
-                        }
-                        orderList = orderList.plus(basket)
-                        var remainMoney = doubleCalc(insertMoney, totalPrice, "-")
-                        println("거스름돈 $remainMoney 반환합니다.")
-                        println("주문 완료 (${LocalDateTime.now()})")
-                        break
-                    } else if (chosenBasketMenu == "cancel") {
-                        println("투입 금액 ${insertMoney}를 반환합니다.")
-                        break
-                    }
+                    val basketProcess = basketProcess(chosenBasketMenu, insertMoney, basket)?:continue
+                    if(basketProcess) break
                 }
             }
         }
@@ -228,6 +203,45 @@ fun chooseBasketMenu(): String? {
             else -> null
         }
     }
+}
+
+fun orderCheck(insertMoney: Double, basket: Array<Food>):Boolean{
+    var totalPrice = basket.fold(0.0) { price, it -> price + it.price }
+    // 주문 체크
+    if (basket.isEmpty()) {
+        println("주문 추가 후 시도해주세요")
+        return false
+    }
+    // 돈 체크
+    if (totalPrice > insertMoney) {
+        println("${totalPrice - insertMoney}만큼 돈 부족")
+        return false
+    }
+    // 시간 체크
+    if (!checkTime()) {
+        println("은행 점검 시간 입니다. $bankMaintenanceStart ~ $bankMaintenanceEnd")
+        println("현재 시간 ${LocalTime.now()}")
+        return false
+    }
+    return true
+}
+
+fun basketProcess(chosenBasketMenu:String,insertMoney: Double, basket: Array<Food>):Boolean?{
+    if (chosenBasketMenu == "done") {
+        var totalPrice = basket.fold(0.0) { price, it -> price + it.price }
+        // 주문 체크
+        val orderCheck = orderCheck(insertMoney, basket)
+        if(!orderCheck) return null
+        orderList = orderList.plus(basket)
+        var remainMoney = doubleCalc(insertMoney, totalPrice, "-")
+        println("거스름돈 $remainMoney 반환합니다.")
+        println("주문 완료 (${LocalDateTime.now()})")
+        return true
+    } else if (chosenBasketMenu == "cancel") {
+        println("투입 금액 ${insertMoney}를 반환합니다.")
+        return true
+    }
+    return false
 }
 
 
