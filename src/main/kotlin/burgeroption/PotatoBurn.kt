@@ -1,8 +1,8 @@
 package burgeroption
 
-import burger.BurgerOption
+import db.Option
 
 class PotatoBurn(
     override val name: String = "PotatoBurn",
     override val price: Double = 0.5
-) :BurgerOption
+) : Option

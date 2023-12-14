@@ -1,6 +1,6 @@
-package burger
+package db
 
-interface BurgerOption {
+interface Option {
     val name:String
     val price:Double
 }

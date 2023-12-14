@@ -1,39 +1,134 @@
 package main
 
 import db.DataBase
+import db.Food
 
-fun String.isInt():Boolean = this.matches("[0-9]+".toRegex())
+fun String.isInt(): Boolean = this.matches("[0-9]+".toRegex())
 val dataBase = DataBase.getInstance()
 
 fun main(args: Array<String>) {
     println("######키오스크 작동시작######")
-    while (true){
-        val choseMenu = chooseMenu()
+    var orderList: Array<Array<Food>> = emptyArray()
 
-        if(choseMenu == "종료") return
+    while (true) { // 주문 하나
+        var foodList: Array<Food> = emptyArray()
+        var insertMoney = 0.0
 
-        var menuTest = dataBase.menuMap[choseMenu]
-        println(menuTest?.size)
+        while (true) { // 메뉴 선택
+            val choseMenu = chooseMenu() ?: return
+            when(choseMenu){
+                "money" -> { // 돈 추가 프로세스
 
+                }
+                "food" -> { // 음식 선택 프로세스
+                    val choseFoodMenu = chooseFoodMenu() ?: continue
+                    val newFood = chooseFood(choseFoodMenu) ?: continue
+                    foodList = foodList.plus(newFood!!)
+                }
+                "basket" -> { // 장바구니 확인, 주문 완료 프로세스
+
+                }
+            }
+        }
+        //주문 완료 프로세스
+        orderList = orderList.plus(foodList)
+    }
+}
+
+fun chooseMenu(): String? {
+    while (true) {
+        var message = ""
+        message += "1. 돈 넣기\t|\t돈 넣기\n"
+        message += "2. 음식 메뉴 선택\t|\t음식 메뉴 선택\n"
+        message += "3. 장바구니\t|\t장바구니\n"
+        message += "0. 종료\t|\t종료"
+        println(message)
+
+        val chooseNum = readln()
+        if (!chooseNum.isInt() || chooseNum.toInt() !in 0..3) {
+            println("잘못된 번호를 입력했어요 다시 입력해주세요.")
+            continue
+        }
+        return when(chooseNum.toInt()){
+            1 -> "money"
+            2 -> "food"
+            3 -> "basket"
+            else -> null
+        }
+    }
+}
+
+fun chooseFoodMenu(): String? {
+    while (true) {
+        var menuList = dataBase.menuList
+        var message = "[ ${dataBase.storeName} MENU ]\n"
+        for (i in menuList.indices) {
+            message += "${i + 1}. ${menuList[i].name}\t|\t${menuList[i].displayInfo}\n"
+        }
+        message += "0. 뒤로가기\t|\t뒤로가기"
+        println(message)
+
+        val chooseNum = readln()
+        if (!chooseNum.isInt() || chooseNum.toInt() !in 0..menuList.size) {
+            println("잘못된 번호를 입력했어요 다시 입력해주세요.")
+            continue
+        }
+        return if (chooseNum.toInt() == 0) null else menuList[chooseNum.toInt() - 1].name
+    }
+}
+
+fun chooseFood(choseMenu: String): Food? {
+    var foodMenu = dataBase.menuMap[choseMenu]
+
+    while (true) {
+        var message = "[ $choseMenu MENU]\n"
+        for (i in foodMenu?.indices!!) {
+            message += "${i + 1}. ${foodMenu[i].name}\t|\t${foodMenu[i].price}\t|\t${foodMenu[i].displayInfo}\n"
+        }
+        message += "0. 뒤로가기\t|\t뒤로가기"
+        println(message)
+        val chooseNum = readln()
+        if (!chooseNum.isInt() || chooseNum.toInt() !in 0..foodMenu.size) {
+            println("잘못된 번호를 입력했어요 다시 입력해주세요.")
+            continue
+        }
+        if (chooseNum.toInt() == 0) return null
+        val food = foodMenu[chooseNum.toInt()]
+        chooseOption(food)
+        return food
 
     }
 }
 
-fun chooseMenu():String{
+fun chooseOption(food: Food) {
     while (true) {
-        var menuList = dataBase.menuList
-        var message="[ ${dataBase.storeName} MENU ]\n"
-        for(i in menuList.indices){
-            message += "${i+1}. ${menuList[i].name} \t | \t ${menuList[i].displayInfo}\n"
-        }
-        message += "0. 종료 \t | \t프로그램 종료"
-        println(message)
-
-        val chooseNum = readln()
-        if(!chooseNum.isInt() || chooseNum.toInt() !in 0..menuList.size){
+        var message = "[ ${food.name} option]\n"
+        var chooseNum = readln()
+        message += "1. 장바구니 넣기\n"
+        message += "2. 옵션 선택하기\n"
+        if (!chooseNum.isInt() || chooseNum.toInt() !in 1..2) {
             println("잘못된 번호를 입력했어요 다시 입력해주세요.")
             continue
         }
-        return if(chooseNum.toInt() == 0) "종료" else menuList[chooseNum.toInt()-1].name
+        if (chooseNum.toInt() == 1) return
+
+        val options = food.optionList
+        if (options.isEmpty()) {
+            println("선택할 옵션이 없으니 옵션 선택은 넘어 가요")
+            return
+        }
+        for (i in options?.indices!!) {
+            message += "${i + 1}. ${options[i].name}\t|\t${options[i].price}\n"
+        }
+        message += "0. 뒤로가기\t|\t뒤로가기"
+        println(message)
+        chooseNum = readln()
+        if (!chooseNum.isInt() || chooseNum.toInt() !in 0..options.size) {
+            println("잘못된 번호를 입력했어요 다시 입력해주세요.")
+            continue
+        }
+        if (chooseNum.toInt() == 0) continue
+        food.addOption(options[chooseNum.toInt()-1])
     }
+
 }
