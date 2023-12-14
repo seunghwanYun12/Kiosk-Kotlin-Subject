@@ -1,4 +1,4 @@
-package burgeroption
+package menuoption.burgeroption
 
 import db.Option
 

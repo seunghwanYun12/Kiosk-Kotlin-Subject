@@ -1,4 +1,4 @@
-package burger
+package menu.burger
 
 import db.Food
 import db.Option

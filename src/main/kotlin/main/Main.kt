@@ -16,15 +16,17 @@ fun main(args: Array<String>) {
 
         while (true) { // 메뉴 선택
             val choseMenu = chooseMenu() ?: return
-            when(choseMenu){
+            when (choseMenu) {
                 "money" -> { // 돈 추가 프로세스
 
                 }
+
                 "food" -> { // 음식 선택 프로세스
                     val choseFoodMenu = chooseFoodMenu() ?: continue
-                    val newFood = chooseFood(choseFoodMenu) ?: continue
-                    foodList = foodList.plus(newFood!!)
+                    val choseFood = chooseFood(choseFoodMenu) ?: continue
+                    foodList = foodList.plus(choseFood!!)
                 }
+
                 "basket" -> { // 장바구니 확인, 주문 완료 프로세스
 
                 }
@@ -49,7 +51,7 @@ fun chooseMenu(): String? {
             println("잘못된 번호를 입력했어요 다시 입력해주세요.")
             continue
         }
-        return when(chooseNum.toInt()){
+        return when (chooseNum.toInt()) {
             1 -> "money"
             2 -> "food"
             3 -> "basket"
@@ -65,7 +67,7 @@ fun chooseFoodMenu(): String? {
         for (i in menuList.indices) {
             message += "${i + 1}. ${menuList[i].name}\t|\t${menuList[i].displayInfo}\n"
         }
-        message += "0. 뒤로가기\t|\t뒤로가기"
+        message += "0. 처음으로\t|\t처음으로"
         println(message)
 
         val chooseNum = readln()
@@ -79,12 +81,20 @@ fun chooseFoodMenu(): String? {
 
 fun chooseFood(choseMenu: String): Food? {
     var foodMenu = dataBase.menuMap[choseMenu]
+    if(foodMenu == null){
+        println("없는 메뉴에요!")
+        return null
+    }
+    else if(foodMenu.isEmpty()){
+        println("메뉴 준비 중입니다.")
+        return null
+    }
     while (true) {
         var message = "[$choseMenu MENU]\n"
         for (i in foodMenu?.indices!!) {
             message += "${i + 1}. ${foodMenu[i].name}\t|\t${foodMenu[i].price}\t|\t${foodMenu[i].displayInfo}\n"
         }
-        message += "0. 뒤로가기\t|\t뒤로가기"
+        message += "0. 처음으로\t|\t처음으로"
         println(message)
         val chooseNum = readln()
         if (!chooseNum.isInt() || chooseNum.toInt() !in 0..foodMenu.size) {
@@ -92,7 +102,7 @@ fun chooseFood(choseMenu: String): Food? {
             continue
         }
         if (chooseNum.toInt() == 0) return null
-        val food = foodMenu[chooseNum.toInt()-1]
+        val food = foodMenu[chooseNum.toInt() - 1].clone()
         chooseOption(food)
         return food
     }
@@ -114,11 +124,11 @@ fun chooseOption(food: Food) {
 
         val options = food.optionList
         if (options.isEmpty()) {
-            println("선택할 옵션이 없으니 옵션 선택은 넘어 가요")
+            println("선택할 옵션이 없어요")
             continue
         }
 
-        message = "[ ${food.name} option]\n"
+        message = "[${food.name} option]\n"
         for (i in options?.indices!!) {
             message += "${i + 1}. ${options[i].name}\t|\t${options[i].price}\n"
         }
@@ -130,7 +140,7 @@ fun chooseOption(food: Food) {
             continue
         }
         if (chooseNum.toInt() == 0) continue
-        food.addOption(options[chooseNum.toInt()-1])
+        food.addOption(options[chooseNum.toInt() - 1])
     }
 
 }

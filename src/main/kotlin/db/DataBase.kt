@@ -1,11 +1,17 @@
 package db
 
-import burger.*
-import burgeroption.*
 import menu.Beer
 import menu.Burger
 import menu.Drinks
 import menu.FrozenCustard
+import menu.beer.Guinness
+import menu.beer.Kirin
+import menu.beer.Stella
+import menu.burger.*
+import menu.drinks.Coke
+import menu.drinks.Fanta
+import menuoption.burgeroption.*
+import menuoption.drinksoption.Syrup
 
 class DataBase private constructor() {
     val storeName:String = "SHAKESHACK"
@@ -16,16 +22,34 @@ class DataBase private constructor() {
         Beer("Beer","뉴욕 브루클린 브루어리에서 양조한 맥주"),
     )
 
-    val burgerList:List<Food> = listOf(
+    private val burgerList:List<Food> = listOf(
         CheeseBurger(optionList = arrayOf(PotatoBurn(), Cheese())),
         HamBurger(optionList = arrayOf(BeefPatty(), Ham())),
         ShackBurger(optionList = arrayOf(Tomato())),
-        ShroomBurger(optionList = arrayOf(Cheese(),BeefPatty())),
+        ShroomBurger(optionList = arrayOf(Cheese(), BeefPatty())),
         SmokeShack(optionList = arrayOf(Bacon()))
     )
 
+    private val beerList:List<Food> = listOf(
+        Guinness(),
+        Kirin(),
+        Stella()
+    )
+
+    private val drinksList:List<Food> = listOf(
+        Coke(optionList = arrayOf(Syrup())),
+        Fanta()
+    )
+
+    private val frozenCustardList:List<Food> = listOf(
+
+    )
+
     val menuMap:Map<String,List<Food>> = mapOf(
-        (menuList.find { it is Burger }?.name ?: "") to burgerList
+        (menuList.find { it is Burger }?.name ?: "") to burgerList,
+        (menuList.find { it is Beer }?.name ?: "") to beerList,
+        (menuList.find { it is Drinks }?.name ?: "") to drinksList,
+        (menuList.find { it is FrozenCustard }?.name ?: "") to frozenCustardList
     )
 
     companion object {

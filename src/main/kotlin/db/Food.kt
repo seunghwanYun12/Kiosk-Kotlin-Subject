@@ -2,7 +2,7 @@ package db
 
 import kotlin.math.floor
 
-abstract class Food {
+abstract class Food : Cloneable {
     abstract val name: String
     abstract val displayInfo: String
     abstract var price:Double
@@ -20,5 +20,9 @@ abstract class Food {
         var optionNames = selectedOption.joinToString(", ") { it.name }
         if(optionNames.isEmpty()) optionNames = "추가된 옵션 없음"
         return "$name | $optionNames | $price | $displayInfo "
+    }
+
+    public override fun clone(): Food {
+        return super.clone() as Food
     }
 }
