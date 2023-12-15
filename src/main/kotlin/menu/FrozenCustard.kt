@@ -2,7 +2,7 @@ package menu
 
 import db.Menu
 
-open class FrozenCustard(name: String, displayInfo: String) : Menu {
+class FrozenCustard(name: String, displayInfo: String) : Menu {
 
     override val name:String = name
     override val displayInfo:String = displayInfo
