@@ -1,5 +1,3 @@
-package main
-
 import db.DataBase
 import db.Food
 import kotlinx.coroutines.*
@@ -48,7 +46,7 @@ fun main() = runBlocking  {
                 "basket" -> { // 장바구니 확인, 주문 완료 프로세스
                     println(getNowStateMessage(insertMoney, basket, orderList.size))
                     val chosenBasketMenu = chooseBasketMenu() ?: continue
-                    val basketProcess = basketProcess(chosenBasketMenu, insertMoney, basket)?:continue
+                    val basketProcess = basketProcess(chosenBasketMenu, insertMoney, basket) ?:continue
                     if(basketProcess) break
                 }
             }
